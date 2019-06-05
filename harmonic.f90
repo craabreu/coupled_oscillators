@@ -55,24 +55,25 @@ call METHOD(nsteps)
 
 contains
   !---------------------------
-  subroutine Verlet(nsteps)
-    integer, intent(in) :: nsteps
-    integer :: step, substep
-    do step = 1, nsteps
-      p = p + nrespa*dt_2*F_slow(q)
-      do substep = 1, nrespa
-        p = p + dt_2*F_fast(q)
-        q = q + dt*p
-        p = p + dt_2*F_fast(q)
-      end do
-      p = p + nrespa*dt_2*F_slow(q)
-      SAMPLE
-    end do
-  end subroutine
+!  subroutine Verlet(nsteps)
+!    integer, intent(in) :: nsteps
+!    integer :: step, substep
+!    do step = 1, nsteps
+!      p = p + nrespa*dt_2*F_slow(q)
+!      do substep = 1, nrespa
+!        p = p + dt_2*F_fast(q)
+!        q = q + dt*p
+!        p = p + dt_2*F_fast(q)
+!      end do
+!      p = p + nrespa*dt_2*F_slow(q)
+!      SAMPLE
+!    end do
+!  end subroutine
   !---------------------------
   subroutine BAOAB(nsteps)
     integer, intent(in) :: nsteps
     integer :: step, substep
+    print*, '# BAOAB: n, nrespa = ', n, nrespa
     do step = 1, nsteps
       p = p + nrespa*dt_2*F_slow(q)
       do substep = 1, nrespa
@@ -91,6 +92,7 @@ contains
     integer, intent(in) :: nsteps
     integer :: step, substep
     real(8) :: F(2)
+    print*, '# memory_BAOAB: n, nrespa = ', n, nrespa
     do step = 1, nsteps
       F = F_slow(q)
       do substep = 1, nrespa
@@ -108,6 +110,7 @@ contains
   subroutine middle_NHC(nsteps)
     integer, intent(in) :: nsteps
     integer :: step, substep
+    print*, '# middle_NHC: n, nrespa = ', n, nrespa
     do step = 1, nsteps
       p = p + nrespa*dt_2*F_slow(q)
       do substep = 1, nrespa
@@ -125,6 +128,7 @@ contains
   subroutine xi_respa_NHC(nsteps)
     integer, intent(in) :: nsteps
     integer :: step, substep
+    print*, '# xi_respa_NHC: n, nrespa = ', n, nrespa
     do step = 1, nsteps
       call nhc % integrate( p, dt_2 )
       p = p + nrespa*dt_2*F_slow(q)
@@ -145,6 +149,7 @@ contains
   subroutine xo_respa_NHC(nsteps)
     integer, intent(in) :: nsteps
     integer :: step, substep
+    print*, '# xo_respa_NHC: n, nrespa = ', n, nrespa
     do step = 1, nsteps
       call xo_nhc % integrate( p, nrespa*dt_2 )
       p = p + nrespa*dt_2*F_slow(q)
@@ -162,6 +167,7 @@ contains
   subroutine middle_IsoK_NHC(nsteps)
     integer, intent(in) :: nsteps
     integer :: step, substep
+    print*, '# middle_IsoK_NHC: n, nrespa = ', n, nrespa
     do step = 1, nsteps
       p = p + nrespa*dt_2*F_slow(q)
       do substep = 1, nrespa
@@ -179,6 +185,7 @@ contains
   subroutine middle_SubK_NHC(nsteps)
     integer, intent(in) :: nsteps
     integer :: step, substep
+    print*, '# middle_SubK_NHC: n, nrespa = ', n, nrespa
     do step = 1, nsteps
       p = p + nrespa*dt_2*F_slow(q)
       do substep = 1, nrespa
@@ -197,6 +204,7 @@ contains
     integer, intent(in) :: nsteps
     integer :: step, substep
     real(8) :: vs(2)
+    print*, '# middle_NHL: n, nrespa = ', n, nrespa
     do step = 1, nsteps
       p = p + nrespa*dt_2*F_slow(q)
       do substep = 1, nrespa
@@ -221,6 +229,7 @@ contains
     integer, intent(in) :: nsteps
     integer :: step, substep
     real(8) :: vs(2)
+    print*, '# middle_SINR: n, nrespa = ', n, nrespa
     do step = 1, nsteps
       p = p + nrespa*dt_2*F_slow(q)
       do substep = 1, nrespa

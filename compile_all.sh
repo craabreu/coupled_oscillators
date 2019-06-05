@@ -10,7 +10,7 @@ echo $methods
 for method in $methods; do
 #  make METHOD=$method NN=$1 NRESPA=$2 clean
 #  make METHOD=$method NN=$1 NRESPA=$2
-  mkdir $method
+  mkdir -p $method
   mv harmonic-${method}* ${method}/
 done
 

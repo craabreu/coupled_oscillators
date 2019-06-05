@@ -12,9 +12,6 @@ EXEC = harmonic-$(METHOD)-n$(NN)-respa$(NRESPA)
 all: $(EXEC)
 
 clean:
-	rm -f $(EXEC)
-
-clean-all:
 	rm -f $(EXEC) *.o
 
 $(EXEC): harmonic.o mRandom.o mThermostat.o
