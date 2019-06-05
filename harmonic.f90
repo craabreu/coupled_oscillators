@@ -12,7 +12,7 @@ integer, parameter :: nsteps = nsamples*isample
 real(8), parameter :: n = NN
 real(8), parameter :: gamma = 1d0
 real(8), parameter :: L = 10d0
-real(8), parameter :: dt = 0.05d0
+real(8), parameter :: dt = 0.01d0
 real(8), parameter :: Q_eta = 1d0
 
 real(8), parameter :: pi = 4d0*datan(1d0)
