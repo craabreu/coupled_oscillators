@@ -8,8 +8,8 @@ fi
 methods=$(grep -e '^\s*subroutine' harmonic.f90 | sed -e 's/(.*)//g' -e 's/  subroutine //g')
 echo $methods
 for method in $methods; do
-#  make METHOD=$method NN=$1 NRESPA=$2 clean
-#  make METHOD=$method NN=$1 NRESPA=$2
+  make METHOD=$method NN=$1 NRESPA=$2 clean
+  make METHOD=$method NN=$1 NRESPA=$2
   mkdir -p $method
   mv harmonic-${method}* ${method}/
 done

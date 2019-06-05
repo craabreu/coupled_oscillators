@@ -2,8 +2,8 @@ METHOD ?= BAOAB
 NN ?= 1
 NRESPA ?= 10
 
-FORT = /usr/bin/gfortran
-FOPTS = -Ofast -march=native -ffast-math -cpp -DMETHOD=$(METHOD) -DNN=$(NN) -DNRESPA=$(NRESPA)
+FORT = ifort
+FOPTS = -Ofast -march=native -cpp -DMETHOD=$(METHOD) -DNN=$(NN) -DNRESPA=$(NRESPA)
 
 EXEC = harmonic-$(METHOD)-n$(NN)-respa$(NRESPA)
 
