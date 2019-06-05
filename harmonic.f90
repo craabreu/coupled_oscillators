@@ -9,7 +9,6 @@ integer, parameter :: nrespa = NRESPA
 integer, parameter :: nsamples = 1000000
 integer, parameter :: isample = 100
 integer, parameter :: nsteps = nsamples*isample
-integer, parameter :: seed = 2783465
 real(8), parameter :: n = NN
 real(8), parameter :: gamma = 1d0
 real(8), parameter :: L = 10d0
@@ -26,6 +25,8 @@ real(8), parameter :: O1 = exp(-gamma*dt)
 real(8), parameter :: O2 = sqrt(1d0 - O1**2)
 real(8), parameter :: sqrt_n = sqrt(n)
 
+integer :: nseeds
+integer, allocatable :: seed(:)
 real(8) :: q(2), p(2), v_eta(2)
 type(xrsr128) :: random
 type(NoseHooverChain) :: nhc, xo_nhc
@@ -39,7 +40,11 @@ type(SubkineticNoseHooverChain) :: subk_nhc
 
 #define SAMPLE if (mod(step, isample) == 0) write(*,'(4F13.8)') q, p
 
-call random % setup( seed )
+call random_seed(size=nseeds)
+allocate( seed(nseeds) )
+call random_seed(get=seed)
+call random % setup( seed(1) )
+
 call xo_nhc % initialize( 2, 3, nrespa, 1d0, Q_eta, n )
 call nhc % initialize( 2, 3, 1, 1d0, Q_eta, n )
 call isok_nhc % initialize( 2, 3, 1, 1d0, Q_eta, n )
@@ -55,25 +60,25 @@ call METHOD(nsteps)
 
 contains
   !---------------------------
-!  subroutine Verlet(nsteps)
-!    integer, intent(in) :: nsteps
-!    integer :: step, substep
-!    do step = 1, nsteps
-!      p = p + nrespa*dt_2*F_slow(q)
-!      do substep = 1, nrespa
-!        p = p + dt_2*F_fast(q)
-!        q = q + dt*p
-!        p = p + dt_2*F_fast(q)
-!      end do
-!      p = p + nrespa*dt_2*F_slow(q)
-!      SAMPLE
-!    end do
-!  end subroutine
+  ! subroutine Verlet(nsteps)
+  !  integer, intent(in) :: nsteps
+  !  integer :: step, substep
+  !  do step = 1, nsteps
+  !    p = p + nrespa*dt_2*F_slow(q)
+  !    do substep = 1, nrespa
+  !      p = p + dt_2*F_fast(q)
+  !      q = q + dt*p
+  !      p = p + dt_2*F_fast(q)
+  !    end do
+  !    p = p + nrespa*dt_2*F_slow(q)
+  !    SAMPLE
+  !  end do
+  ! end subroutine
   !---------------------------
   subroutine BAOAB(nsteps)
     integer, intent(in) :: nsteps
     integer :: step, substep
-    print*, '# BAOAB: n, nrespa = ', n, nrespa
+    print*, '# BAOAB: n, nrespa, seed = ', int(n), nrespa, seed(1)
     do step = 1, nsteps
       p = p + nrespa*dt_2*F_slow(q)
       do substep = 1, nrespa
@@ -92,7 +97,7 @@ contains
     integer, intent(in) :: nsteps
     integer :: step, substep
     real(8) :: F(2)
-    print*, '# memory_BAOAB: n, nrespa = ', n, nrespa
+    print*, '# memory_BAOAB: n, nrespa, seed = ', int(n), nrespa, seed(1)
     do step = 1, nsteps
       F = F_slow(q)
       do substep = 1, nrespa
@@ -110,7 +115,7 @@ contains
   subroutine middle_NHC(nsteps)
     integer, intent(in) :: nsteps
     integer :: step, substep
-    print*, '# middle_NHC: n, nrespa = ', n, nrespa
+    print*, '# middle_NHC: n, nrespa, seed = ', int(n), nrespa, seed(1)
     do step = 1, nsteps
       p = p + nrespa*dt_2*F_slow(q)
       do substep = 1, nrespa
@@ -128,7 +133,7 @@ contains
   subroutine xi_respa_NHC(nsteps)
     integer, intent(in) :: nsteps
     integer :: step, substep
-    print*, '# xi_respa_NHC: n, nrespa = ', n, nrespa
+    print*, '# xi_respa_NHC: n, nrespa, seed = ', int(n), nrespa, seed(1)
     do step = 1, nsteps
       call nhc % integrate( p, dt_2 )
       p = p + nrespa*dt_2*F_slow(q)
@@ -149,7 +154,7 @@ contains
   subroutine xo_respa_NHC(nsteps)
     integer, intent(in) :: nsteps
     integer :: step, substep
-    print*, '# xo_respa_NHC: n, nrespa = ', n, nrespa
+    print*, '# xo_respa_NHC: n, nrespa, seed = ', int(n), nrespa, seed(1)
     do step = 1, nsteps
       call xo_nhc % integrate( p, nrespa*dt_2 )
       p = p + nrespa*dt_2*F_slow(q)
@@ -167,7 +172,7 @@ contains
   subroutine middle_IsoK_NHC(nsteps)
     integer, intent(in) :: nsteps
     integer :: step, substep
-    print*, '# middle_IsoK_NHC: n, nrespa = ', n, nrespa
+    print*, '# middle_IsoK_NHC: n, nrespa, seed = ', int(n), nrespa, seed(1)
     do step = 1, nsteps
       p = p + nrespa*dt_2*F_slow(q)
       do substep = 1, nrespa
@@ -185,7 +190,7 @@ contains
   subroutine middle_SubK_NHC(nsteps)
     integer, intent(in) :: nsteps
     integer :: step, substep
-    print*, '# middle_SubK_NHC: n, nrespa = ', n, nrespa
+    print*, '# middle_SubK_NHC: n, nrespa, seed = ', int(n), nrespa, seed(1)
     do step = 1, nsteps
       p = p + nrespa*dt_2*F_slow(q)
       do substep = 1, nrespa
@@ -204,7 +209,7 @@ contains
     integer, intent(in) :: nsteps
     integer :: step, substep
     real(8) :: vs(2)
-    print*, '# middle_NHL: n, nrespa = ', n, nrespa
+    print*, '# middle_NHL: n, nrespa, seed = ', int(n), nrespa, seed(1)
     do step = 1, nsteps
       p = p + nrespa*dt_2*F_slow(q)
       do substep = 1, nrespa
@@ -229,7 +234,7 @@ contains
     integer, intent(in) :: nsteps
     integer :: step, substep
     real(8) :: vs(2)
-    print*, '# middle_SINR: n, nrespa = ', n, nrespa
+    print*, '# middle_SINR: n, nrespa, seed = ', int(n), nrespa, seed(1)
     do step = 1, nsteps
       p = p + nrespa*dt_2*F_slow(q)
       do substep = 1, nrespa
