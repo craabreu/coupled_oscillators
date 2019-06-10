@@ -56,6 +56,6 @@ for n in [1, 2, 4]:
 
 for title, frame in frames.items():
     frame.plot(x='nrespa')
-    plt.yscale('log')
+    # plt.yscale('log')
 
 plt.show()

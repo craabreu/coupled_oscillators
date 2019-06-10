@@ -255,4 +255,26 @@ contains
     end do
   end subroutine
   !---------------------------
+  subroutine middle_SINR_alt(nsteps)
+    integer, intent(in) :: nsteps
+    integer :: step, substep
+    real(8) :: vs(2)
+    print*, '# middle_SINR_alt: n, nrespa, seed = ', int(n), nrespa, seed(1)
+    do step = 1, nsteps
+      p = p + nrespa*dt_2*F_slow(q)
+      do substep = 1, nrespa
+        p = p + dt_2*F_fast(q)
+        q = q + dt_2*v(p)
+        p = sqrt_n*asinh(exp(-dt_2*v_eta)*sinh(p/sqrt_n))
+        vs = v(p)
+        v_eta = O1*v_eta + (1 - O1)*((n+1)/n*vs*vs - 1d0)/(Q_eta*gamma) + (O2/sqrt(Q_eta))*normalvec
+        p = sqrt_n*asinh(exp(-dt_2*v_eta)*sinh(p/sqrt_n))
+        q = q + dt_2*v(p)
+        p = p + dt_2*F_fast(q)
+      end do
+      p = p + nrespa*dt_2*F_slow(q)
+      SAMPLE
+    end do
+  end subroutine
+  !---------------------------
 end program harmonic
