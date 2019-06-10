@@ -9,12 +9,7 @@
 #SBATCH --mail-user=ca2356@nyu.edu
 #SBATCH --output=slurm_%j.out
 
-./parallel_execute.sh BAOAB
-./parallel_execute.sh memory_BAOAB
-./parallel_execute.sh middle_IsoK_NHC
-#./parallel_execute.sh middle_NHC
-#./parallel_execute.sh middle_NHL
-#middle_SINR
-#middle_SubK_NHC
-#xi_respa_NHC
-#xo_respa_NHC
+methods=($(cat methods.txt))
+method=${methods[0]}
+./parallel_execute.sh L10_$method
+./parallel_execute.sh L10plus_$method

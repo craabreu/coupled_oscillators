@@ -1,6 +1,7 @@
 #!/bin/bash
 
-methods=$(grep -e '^\s*subroutine' harmonic.f90 | sed -e 's/(.*)//g' -e 's/  subroutine //g')
+methods=$(cat methods.txt)
+methods=xi_respa_NHC
 echo $methods
 for method in $methods; do
   for n in 1 2 4; do
